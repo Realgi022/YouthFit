@@ -7,8 +7,8 @@ namespace YouthFit.Pages
     {
         public IActionResult OnGet()
         {
-            HttpContext.Session.Clear();               // clear session
-            return RedirectToPage("/Index");            // go back to signup/login
+            HttpContext.Session.Clear();               
+            return RedirectToPage("/Index");            
         }
     }
 }

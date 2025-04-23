@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using YouthFit.Models;
 using YouthFit.Repositories;
+using Microsoft.AspNetCore.Http;  
+
 
 namespace YouthFit.Pages
 {
@@ -55,6 +57,8 @@ namespace YouthFit.Pages
             return Page();
         }
 
+
+
         public IActionResult OnPostLogin()
         {
             var user = _userRepo.GetAll()
@@ -64,12 +68,15 @@ namespace YouthFit.Pages
 
             if (user == null)
             {
-                ViewData["CurrentPage"] = "/Index"; 
+                ViewData["CurrentPage"] = "/Index";
                 LoginErrorMessage = "Invalid credentials.";
                 return Page();
             }
 
+            HttpContext.Session.SetString("Username", user.Username);
+
             return RedirectToPage("/Steps");
         }
+
     }
 }
