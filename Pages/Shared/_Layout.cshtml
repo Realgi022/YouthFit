@@ -13,7 +13,7 @@
           rel="stylesheet" />
 </head>
 
-<body>
+<body class="@ViewData["BodyClass"]">
     @using Microsoft.AspNetCore.Http
     @{
         var currentPage = ViewData["CurrentPage"] as string ?? string.Empty;
@@ -69,6 +69,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
 
 </body>
 </html>

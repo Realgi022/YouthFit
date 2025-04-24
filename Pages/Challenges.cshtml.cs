@@ -8,6 +8,8 @@ namespace YouthFit.Pages
         public void OnGet()
         {
             ViewData["CurrentPage"] = "/Challenges";
+            ViewData["BodyClass"] = "page-background";
+
         }
     }
 }
