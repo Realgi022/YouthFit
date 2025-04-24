@@ -1,5 +1,49 @@
 ﻿@page
 @model YouthFit.Pages.StepsModel
 @{
+    ViewData["Title"] = "Steps";
 }
-	
+
+<div class="d-flex justify-content-center align-items-start py-5">
+    <div class="row w-100 justify-content-center">
+        <!-- Add Entry Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm rounded-3 border-0">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Add Step Entry</h4>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="NewStep.Date" class="form-label">Date</label>
+                            <input asp-for="NewStep.Date" type="date" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NewStep.StepCount" class="form-label">Step Count</label>
+                            <input asp-for="NewStep.StepCount" type="number" class="form-control" placeholder="e.g., 5000" />
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-5">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm rounded-3 border-0">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">History</h4>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var step in Model.StepHistory)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                <span class="text-muted">@step.Date.ToString("yyyy-MM-dd")</span>
+                                <span class="fw-bold">@step.StepCount</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
