@@ -19,7 +19,6 @@
         var username = isAuthenticated ? User.Identity.Name : string.Empty;
     }
 
-    @* Show navbar only when authenticated and not on the login/index page *@
     @if (isAuthenticated && currentPage != "/Index" && currentPage != "/Login")
     {
         <nav class="navbar navbar-expand-lg fixed-top navbar-glass">
@@ -50,7 +49,6 @@
                     </ul>
                 </div>
 
-                <!-- Profile Picture with tooltip -->
                 <span class="ms-auto" title="@username">
                     <img src="~/images/BlankProfilePicture.png" alt="Profile" height="40" class="rounded-circle" style="cursor: pointer;" />
                 </span>

@@ -59,7 +59,6 @@ namespace YouthFit.Pages
             return Page();
         }
 
-        // ← Make this async and use cookie auth:
         public async Task<IActionResult> OnPostLogin()
         {
             var user = _userRepo.GetAll()
@@ -73,23 +72,19 @@ namespace YouthFit.Pages
                 return Page();
             }
 
-            // 1) Create claims
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name,           user.Username)
             };
 
-            // 2) Create identity & principal
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            // 3) Sign in (issues cookie)
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal
             );
 
-            // 4) Redirect to Steps page
             return RedirectToPage("/Steps");
         }
     }
