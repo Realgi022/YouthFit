@@ -1,59 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using YouthFit.Models;
+using System;
+using System.Collections.Generic;
 
 namespace YouthFit.Repositories
 {
     public class ChallengeRepository
     {
-        private readonly string connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=YouthFitDb;Trusted_Connection=True;";
+        string connectionString = "Server=(localdb)\\mssqllocaldb;Database=YouthFitDb;Trusted_Connection=True;";
 
+        // Get all challenges
         public List<Challenge> GetAll()
         {
-            var challenges = new List<Challenge>();
-            using (var conn = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                conn.Open();
-                var cmd = new SqlCommand(
-                    "SELECT Id, Title, Description, GoalSteps, Deadline FROM Challenges", conn);
+                connection.Open();
+                var command = new SqlCommand("SELECT * FROM Challenges", connection);
+                var reader = command.ExecuteReader();
+                var challenges = new List<Challenge>();
 
-                using (var reader = cmd.ExecuteReader())
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        var ch = new Challenge
-                        {
-                            Id = reader.GetInt32(0),
-                            Title = reader.GetString(1),
-                            Description = reader.GetString(2),
-                            GoalSteps = reader.GetInt32(3),
-                            Deadline = reader.GetDateTime(4)
-                        };
-                        ch.Achievements = GetAchievementsByChallengeId(ch.Id);
-                        challenges.Add(ch);
-                    }
-                }
-            }
-            return challenges;
-        }
-
-        public Challenge Get(int id)
-        {
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand(
-                    "SELECT Id, Title, Description, GoalSteps, Deadline FROM Challenges WHERE Id = @Id",
-                    conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (!reader.Read()) return null;
-
-                    var ch = new Challenge
+                    var challenge = new Challenge
                     {
                         Id = reader.GetInt32(0),
                         Title = reader.GetString(1),
@@ -61,91 +29,92 @@ namespace YouthFit.Repositories
                         GoalSteps = reader.GetInt32(3),
                         Deadline = reader.GetDateTime(4)
                     };
-                    ch.Achievements = GetAchievementsByChallengeId(ch.Id);
-                    return ch;
+                    challenges.Add(challenge);
                 }
+
+                return challenges;
             }
         }
 
+        // Get a specific challenge by Id
+        public Challenge Get(int id)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                var command = new SqlCommand("SELECT * FROM Challenges WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return new Challenge
+                    {
+                        Id = reader.GetInt32(0),
+                        Title = reader.GetString(1),
+                        Description = reader.GetString(2),
+                        GoalSteps = reader.GetInt32(3),
+                        Deadline = reader.GetDateTime(4)
+                    };
+                }
+
+                return null;
+            }
+        }
+
+        // Add a new challenge
         public void Add(Challenge challenge)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
-                conn.Open();
-                var cmd = new SqlCommand(
-                    "INSERT INTO Challenges (Title, Description, GoalSteps, Deadline) " +
-                    "VALUES (@Title, @Description, @GoalSteps, @Deadline)", conn);
-
-                cmd.Parameters.AddWithValue("@Title", challenge.Title);
-                cmd.Parameters.AddWithValue("@Description", challenge.Description);
-                cmd.Parameters.AddWithValue("@GoalSteps", challenge.GoalSteps);
-                cmd.Parameters.AddWithValue("@Deadline", challenge.Deadline);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        public void Update(Challenge challenge)
-        {
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand(
-                    "UPDATE Challenges " +
-                    "SET Title = @Title, Description = @Description, " +
-                        "GoalSteps = @GoalSteps, Deadline = @Deadline " +
-                    "WHERE Id = @Id", conn);
-
-                cmd.Parameters.AddWithValue("@Id", challenge.Id);
-                cmd.Parameters.AddWithValue("@Title", challenge.Title);
-                cmd.Parameters.AddWithValue("@Description", challenge.Description);
-                cmd.Parameters.AddWithValue("@GoalSteps", challenge.GoalSteps);
-                cmd.Parameters.AddWithValue("@Deadline", challenge.Deadline);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        public void Delete(int id)
-        {
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand("DELETE FROM Challenges WHERE Id = @Id", conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        private List<Achievement> GetAchievementsByChallengeId(int challengeId)
-        {
-            var list = new List<Achievement>();
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand(
-                    "SELECT Id, Title, Description, ChallengeId, UserId, DateAchieved " +
-                    "FROM Achievements WHERE ChallengeId = @ChId", conn);
-                cmd.Parameters.AddWithValue("@ChId", challengeId);
-
-                using (var reader = cmd.ExecuteReader())
+                connection.Open();
+                string query = "INSERT INTO Challenges (UserId, Title, Description, GoalSteps, Deadline) " +
+                               "VALUES (@UserId, @Title, @Description, @GoalSteps, @Deadline)";
+                using (var command = new SqlCommand(query, connection))
                 {
-                    while (reader.Read())
-                    {
-                        list.Add(new Achievement
-                        {
-                            Id = reader.GetInt32(0),
-                            Title = reader.GetString(1),
-                            Description = reader.GetString(2),
-                            ChallengeId = reader.GetInt32(3),
-                            UserId = reader.GetInt32(4),
-                            DateAchieved = reader.GetDateTime(5)
-                        });
-                    }
+                    command.Parameters.AddWithValue("@UserId", challenge.UserId);
+                    command.Parameters.AddWithValue("@Title", challenge.Title);
+                    command.Parameters.AddWithValue("@Description", challenge.Description);
+                    command.Parameters.AddWithValue("@GoalSteps", challenge.GoalSteps);
+                    command.Parameters.AddWithValue("@Deadline", challenge.Deadline);
+                    command.ExecuteNonQuery();
                 }
             }
-            return list;
+        }
+
+
+        // Update an existing challenge
+        public void Update(Challenge challenge)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "UPDATE Challenges SET Title = @Title, Description = @Description, GoalSteps = @GoalSteps, Deadline = @Deadline WHERE Id = @Id";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", challenge.Id);
+                    command.Parameters.AddWithValue("@Title", challenge.Title);
+                    command.Parameters.AddWithValue("@Description", challenge.Description);
+                    command.Parameters.AddWithValue("@GoalSteps", challenge.GoalSteps);
+                    command.Parameters.AddWithValue("@Deadline", challenge.Deadline);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Delete a challenge
+        public void Delete(int id)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM Challenges WHERE Id = @Id";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
-
