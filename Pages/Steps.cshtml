@@ -6,6 +6,7 @@
 
 <div class="d-flex justify-content-center align-items-start py-5">
     <div class="row w-100 justify-content-center">
+        <!-- Add Entry Card -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card shadow-sm rounded-3 border-0">
                 <div class="card-body">
@@ -27,6 +28,7 @@
             </div>
         </div>
 
+        <!-- History Card -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card shadow-sm rounded-3 border-0">
                 <div class="card-body">
@@ -35,8 +37,13 @@
                         @foreach (var step in Model.StepHistory)
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                                <span class="text-muted">@step.Date.ToString("yyyy-MM-dd")</span>
-                                <span class="fw-bold">@step.StepCount</span>
+                                <div>
+                                    <div class="text-muted">@step.Date.ToString("yyyy-MM-dd")</div>
+                                    <div><strong>@step.StepCount</strong> steps</div>
+                                </div>
+                                <div class="text-success fw-semibold">
+                                    @step.CaloriesBurned kcal
+                                </div>
                             </li>
                         }
                     </ul>

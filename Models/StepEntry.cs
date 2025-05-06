@@ -10,5 +10,8 @@ namespace YouthFit.Models
         public int StepCount { get; set; }
 
         public User User { get; set; }
+
+        public double CaloriesBurned => Math.Round(StepCount * 0.04, 2);
+
     }
 }
