@@ -32,12 +32,22 @@ namespace YouthFit.Pages
         {
             int userId = GetCurrentUserId();
 
-            // Set the UserId for the new challenge
+            // Set the UserId and Status for the new challenge
             NewChallenge.UserId = userId;
+            NewChallenge.Status = Status.InProgress;  // Default Status
 
             // Add the new challenge to the database
             _repository.Add(NewChallenge);
 
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostChangeStatus(int challengeId, Status newStatus)
+        {
+            // Update the status in the database
+            _repository.UpdateStatus(challengeId, newStatus);
+
+            // After the status is updated, redirect back to the page
             return RedirectToPage();
         }
 

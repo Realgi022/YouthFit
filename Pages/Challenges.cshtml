@@ -1,12 +1,13 @@
 ﻿@page
 @model YouthFit.Pages.ChallengesModel
+@using YouthFit.Models
+
 @{
     ViewData["Title"] = "Challenges";
     ViewData["BodyClass"] = "page-background";
 }
 
 <h2 class="text-center mb-4 mt-5">Your Challenges</h2>
-
 
 <!-- Display Existing Challenges -->
 @if (Model.Challenges != null && Model.Challenges.Count > 0)
@@ -18,6 +19,8 @@
                 <th>Description</th>
                 <th>Goal Steps</th>
                 <th>Deadline</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +31,26 @@
                     <td>@challenge.Description</td>
                     <td>@challenge.GoalSteps</td>
                     <td>@challenge.Deadline.ToString("yyyy-MM-dd")</td>
+                    <td>@challenge.Status.ToString()</td>
+                    <td>
+                        <!-- Buttons to change the status -->
+                        @if (challenge.Status == Status.InProgress)
+                        {
+                            <form method="post" asp-page-handler="ChangeStatus">
+                                <input type="hidden" name="challengeId" value="@challenge.Id" />
+                                <input type="hidden" name="newStatus" value="1" /> <!-- Completed -->
+                                <button type="submit" class="btn btn-success">Mark as Completed</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="ChangeStatus">
+                                <input type="hidden" name="challengeId" value="@challenge.Id" />
+                                <input type="hidden" name="newStatus" value="0" /> <!-- In Progress -->
+                                <button type="submit" class="btn btn-warning">Mark as In Progress</button>
+                            </form>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -38,4 +61,41 @@ else
     <p class="alert alert-info">No challenges found. You can add one below.</p>
 }
 
+
+<hr>
+
+<h3>Create New Challenge</h3>
+
+<!-- Create New Challenge Form -->
+<form method="post">
+    <div class="form-group">
+        <label for="Title">Title</label>
+        <input type="text" id="Title" class="form-control" asp-for="NewChallenge.Title" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea id="Description" class="form-control" asp-for="NewChallenge.Description" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="GoalSteps">Goal Steps</label>
+        <input type="number" id="GoalSteps" class="form-control" asp-for="NewChallenge.GoalSteps" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Deadline">Deadline</label>
+        <input type="date" id="Deadline" class="form-control" asp-for="NewChallenge.Deadline" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Status">Status</label>
+        <select id="Status" class="form-control" asp-for="NewChallenge.Status">
+            <option value="0">In Progress</option>
+            <option value="1">Completed</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Challenge</button>
+</form>
 
