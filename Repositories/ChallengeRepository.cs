@@ -28,7 +28,7 @@ namespace YouthFit.Repositories
                         Description = reader.GetString(2),
                         GoalSteps = reader.GetInt32(3),
                         Deadline = reader.GetDateTime(4),
-                        Status = (Status)reader.GetInt32(5)  // Assuming Status is stored as an integer in the database
+                        Status = (Status)reader.GetInt32(5)  
                     };
                     challenges.Add(challenge);
                 }
@@ -37,32 +37,32 @@ namespace YouthFit.Repositories
             }
         }
 
-        // Get a specific challenge by Id
-        public Challenge Get(int id)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = new SqlCommand("SELECT * FROM Challenges WHERE Id = @Id", connection);
-                command.Parameters.AddWithValue("@Id", id);
-                var reader = command.ExecuteReader();
+        //// Get a specific challenge by Id
+        //public Challenge Get(int id)
+        //{
+        //    using (var connection = new SqlConnection(connectionString))
+        //    {
+        //        connection.Open();
+        //        var command = new SqlCommand("SELECT * FROM Challenges WHERE Id = @Id", connection);
+        //        command.Parameters.AddWithValue("@Id", id);
+        //        var reader = command.ExecuteReader();
 
-                if (reader.Read())
-                {
-                    return new Challenge
-                    {
-                        Id = reader.GetInt32(0),
-                        Title = reader.GetString(1),
-                        Description = reader.GetString(2),
-                        GoalSteps = reader.GetInt32(3),
-                        Deadline = reader.GetDateTime(4),
-                        Status = (Status)Enum.Parse(typeof(Status), reader.GetString(5)) // Assuming Status is an enum
-                    };
-                }
+        //        if (reader.Read())
+        //        {
+        //            return new Challenge
+        //            {
+        //                Id = reader.GetInt32(0),
+        //                Title = reader.GetString(1),
+        //                Description = reader.GetString(2),
+        //                GoalSteps = reader.GetInt32(3),
+        //                Deadline = reader.GetDateTime(4),
+        //                Status = (Status)Enum.Parse(typeof(Status), reader.GetString(5)) // Assuming Status is an enum
+        //            };
+        //        }
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         // Add a new challenge
         public void Add(Challenge challenge)
@@ -78,7 +78,7 @@ namespace YouthFit.Repositories
                     command.Parameters.AddWithValue("@Description", challenge.Description);
                     command.Parameters.AddWithValue("@GoalSteps", challenge.GoalSteps);
                     command.Parameters.AddWithValue("@Deadline", challenge.Deadline);
-                    command.Parameters.AddWithValue("@Status", (int)challenge.Status); // Convert enum to int
+                    command.Parameters.AddWithValue("@Status", (int)challenge.Status); 
                     command.ExecuteNonQuery();
                 }
             }
@@ -96,7 +96,7 @@ namespace YouthFit.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", challengeId);
-                    command.Parameters.AddWithValue("@Status", (int)newStatus); // Convert Status enum to int
+                    command.Parameters.AddWithValue("@Status", (int)newStatus); 
                     command.ExecuteNonQuery();
                 }
             }

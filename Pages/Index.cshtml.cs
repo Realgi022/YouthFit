@@ -13,13 +13,11 @@ namespace YouthFit.Pages
 {
     public class IndexModel : PageModel
     {
-        // Sign-Up fields
         [BindProperty] public string SignupUsername { get; set; }
         [BindProperty] public string SignupEmail { get; set; }
         [BindProperty] public string SignupPassword { get; set; }
         public string SignupMessage { get; set; }
 
-        // Login fields
         [BindProperty] public string LoginUsername { get; set; }
         [BindProperty] public string LoginPassword { get; set; }
         public string LoginErrorMessage { get; set; }
@@ -61,6 +59,22 @@ namespace YouthFit.Pages
 
         public async Task<IActionResult> OnPostLogin()
         {
+            if (LoginUsername == "admin" && LoginPassword == "admin123")
+            {
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, "admin"),
+            new Claim(ClaimTypes.Name, "admin"),
+            new Claim(ClaimTypes.Role, "admin")
+        };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                return RedirectToPage("/Challenges"); 
+            }
+
             var user = _userRepo.GetAll()
                         .FirstOrDefault(u =>
                             u.Username == LoginUsername &&
@@ -72,18 +86,16 @@ namespace YouthFit.Pages
                 return Page();
             }
 
-            var claims = new List<Claim> {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name,           user.Username)
-            };
+            var userClaims = new List<Claim> {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, "user") 
+    };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+            var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
 
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal
-            );
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal);
 
             return RedirectToPage("/Steps");
         }

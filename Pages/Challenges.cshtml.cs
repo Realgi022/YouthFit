@@ -11,6 +11,8 @@ namespace YouthFit.Pages
     public class ChallengesModel : PageModel
     {
         private readonly ChallengeRepository _repository = new ChallengeRepository();
+        public string Username { get; set; }
+        public bool IsAdmin { get; set; }
 
         [BindProperty]
         public Challenge NewChallenge { get; set; }
@@ -22,21 +24,17 @@ namespace YouthFit.Pages
             ViewData["CurrentPage"] = "/Challenges";
             ViewData["BodyClass"] = "page-background";
 
-            // Fetch all challenges
             Challenges = _repository.GetAll().OrderByDescending(c => c.Deadline).ToList();
+            Username = User.Identity.Name;
+            IsAdmin = User.IsInRole("admin");
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            int userId = GetCurrentUserId();
+            NewChallenge.Status = Status.InProgress;  
 
-            // Set the UserId and Status for the new challenge
-            NewChallenge.UserId = userId;
-            NewChallenge.Status = Status.InProgress;  // Default Status
-
-            // Add the new challenge to the database
             _repository.Add(NewChallenge);
 
             return RedirectToPage();
@@ -44,21 +42,15 @@ namespace YouthFit.Pages
 
         public IActionResult OnPostChangeStatus(int challengeId, Status newStatus)
         {
-            // Update the status in the database
             _repository.UpdateStatus(challengeId, newStatus);
 
-            // After the status is updated, redirect back to the page
             return RedirectToPage();
         }
-
-
-        private int GetCurrentUserId()
+        public IActionResult OnPostDelete(int challengeId)
         {
-            var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (idClaim == null)
-                throw new InvalidOperationException("User is not logged in.");
-
-            return int.Parse(idClaim.Value);
+            _repository.Delete(challengeId);  
+            return RedirectToPage();  
         }
+
     }
 }

@@ -11,7 +11,7 @@ namespace YouthFit.Models
         public string Description { get; set; }
         public int GoalSteps { get; set; }
         public DateTime Deadline { get; set; }
-        public Status Status { get; set; } // Use the Status enum
+        public Status Status { get; set; } 
 
         public ICollection<Achievement> Achievements { get; set; }
     }
