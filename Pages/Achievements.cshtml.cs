@@ -1,15 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using YouthFit.Models;
+using YouthFit.Repositories;
 
 namespace YouthFit.Pages
 {
     public class AchievementsModel : PageModel
     {
+        public List<Achievement> Achievements { get; set; }
+
         public void OnGet()
         {
-            ViewData["CurrentPage"] = "/Achievements";
-            ViewData["BodyClass"] = "page-background";
-
+            var repo = new AchievementRepository();
+            Achievements = repo.GetAll();
         }
     }
 }

@@ -1,4 +1,56 @@
 ﻿@page
 @model YouthFit.Pages.AchievementsModel
+@using YouthFit.Models
 @{
+    ViewData["Title"] = "Achievements";
+    ViewData["BodyClass"] = "page-background";
 }
+
+<h2>Achievements</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Achievement</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var achievement in Model.Achievements)
+        {
+            <tr>
+                <td>@achievement.Title</td>
+                <td>@achievement.Description</td>
+            </tr>
+        }
+
+        <tr>
+            <td>Newbie</td>
+            <td>Earned after completing 5 challenges.</td>
+        </tr>
+        <tr>
+            <td>Super Achiever</td>
+            <td>Earned after completing 10 challenges.</td>
+        </tr>
+        <tr>
+            <td>Fitness Expert</td>
+            <td>Earned after completing all beginner challenges.</td>
+        </tr>
+        <tr>
+            <td>15 Challenges Completed</td>
+            <td>Earned after completing 15 challenges.</td>
+        </tr>
+        <tr>
+            <td>20 Challenges Completed</td>
+            <td>Earned after completing 20 challenges.</td>
+        </tr>
+        <tr>
+            <td>25 Challenges Completed</td>
+            <td>Earned after completing 25 challenges.</td>
+        </tr>
+        <tr>
+            <td>All Challenges</td>
+            <td>Earned after completing all available challenges.</td>
+        </tr>
+    </tbody>
+</table>
