@@ -16,6 +16,8 @@ namespace YouthFit.Pages
         public StepEntry NewStep { get; set; }
 
         public List<StepEntry> StepHistory { get; set; }
+        public Dictionary<string, double> MonthlyAverages { get; set; }
+
 
         public IActionResult OnGet()
         {
@@ -29,8 +31,17 @@ namespace YouthFit.Pages
                 .OrderByDescending(s => s.Date)
                 .ToList();
 
+            // Group by year and month
+            MonthlyAverages = StepHistory
+                .GroupBy(s => s.Date.ToString("yyyy-MM"))
+                .ToDictionary(
+                    g => g.Key,
+                    g => Math.Round(g.Average(s => s.StepCount), 2)
+                );
+
             return Page();
         }
+
 
         public IActionResult OnPost()
         {

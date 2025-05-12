@@ -52,3 +52,21 @@
         </div>
     </div>
 </div>
+<!-- Monthly Average Card -->
+<div class="col-lg-4 col-md-6 mb-4">
+    <div class="card shadow-sm rounded-3 border-0">
+        <div class="card-body">
+            <h4 class="card-title text-center mb-4">Monthly Averages</h4>
+            <ul class="list-group list-group-flush">
+                @foreach (var entry in Model.MonthlyAverages)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                        <div class="text-muted">@entry.Key</div>
+                        <div><strong>@entry.Value</strong> steps</div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
