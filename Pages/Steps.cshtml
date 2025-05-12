@@ -1,5 +1,7 @@
 ﻿@page
 @model YouthFit.Pages.StepsModel
+@using System.Text.Json
+
 @{
     ViewData["Title"] = "Steps";
 }
@@ -30,28 +32,30 @@
 
         <!-- History Card -->
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card shadow-sm rounded-3 border-0">
-                <div class="card-body">
+            <div class="card shadow-sm rounded-3 border-0" style="height: 100%;">
+                <div class="card-body d-flex flex-column" style="height: 100%;">
                     <h4 class="card-title text-center mb-4">History</h4>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var step in Model.StepHistory)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
-                                <div>
-                                    <div class="text-muted">@step.Date.ToString("yyyy-MM-dd")</div>
-                                    <div><strong>@step.StepCount</strong> steps</div>
-                                </div>
-                                <div class="text-success fw-semibold">
-                                    @step.CaloriesBurned kcal
-                                </div>
-                            </li>
-                        }
-                    </ul>
+                    <div class="overflow-auto" style="flex-grow: 1; max-height: 350px;">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var step in Model.StepHistory)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                                    <div>
+                                        <div class="text-muted">@step.Date.ToString("yyyy-MM-dd")</div>
+                                        <div><strong>@step.StepCount</strong> steps</div>
+                                    </div>
+                                    <div class="text-success fw-semibold">
+                                        @step.CaloriesBurned kcal
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
+
 <!-- Monthly Average Card -->
 <div class="col-lg-4 col-md-6 mb-4">
     <div class="card shadow-sm rounded-3 border-0">
@@ -69,4 +73,50 @@
         </div>
     </div>
 </div>
+<div class="col-12 mt-4">
+    <div class="card shadow-sm rounded-3 border-0">
+        <div class="card-body">
+            <h4 class="card-title text-center mb-4">Monthly Step Averages Chart</h4>
+            <canvas id="monthlyStepsChart"></canvas>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('monthlyStepsChart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.MonthlyAverages.Keys)),
+            datasets: [{
+                label: 'Average Steps',
+                data: @Html.Raw(Json.Serialize(Model.MonthlyAverages.Values)),
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Steps'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+
+
 
