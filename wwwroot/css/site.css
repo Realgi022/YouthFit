@@ -108,12 +108,12 @@ body {
     background-color: #ffffff;
 }
 
-.page-background {
+/*.page-background {
     background: url('/images/Youthfit.png') no-repeat center center fixed;
     background-size: cover;
     background-attachment: scroll; 
     min-height: 100vh;
-}
+}*/
 
 .page-background {
     background: url('/images/Youthfit.png') no-repeat center center fixed;
