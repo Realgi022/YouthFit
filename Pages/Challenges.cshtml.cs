@@ -24,12 +24,22 @@ namespace YouthFit.Pages
             ViewData["CurrentPage"] = "/Challenges";
             ViewData["BodyClass"] = "page-background";
 
-            Challenges = _repository.GetAll().OrderByDescending(c => c.Deadline).ToList();
             Username = User.Identity.Name;
             IsAdmin = User.IsInRole("admin");
 
+            // Get all challenges (no user filter)
+            Challenges = _repository.GetAll().OrderByDescending(c => c.Deadline).ToList();
+
+            int completedCount = Challenges.Count(c => c.Status == Status.Completed);
+            if (completedCount >= 5)
+            {
+                TempData["AchievementMessage"] = " Achievement Unlocked: 5 Challenges Completed!";
+            }
+
             return Page();
         }
+
+
 
         public IActionResult OnPost()
         {

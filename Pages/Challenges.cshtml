@@ -9,6 +9,14 @@
 
 <h2 class="text-center mb-4 mt-5">Your Challenges</h2>
 
+@if (TempData["AchievementMessage"] != null)
+{
+    <div class="alert alert-success text-center">
+        @TempData["AchievementMessage"]
+    </div>
+}
+
+
 <!-- Display Existing Challenges -->
 @if (Model.Challenges != null && Model.Challenges.Count > 0)
 {
